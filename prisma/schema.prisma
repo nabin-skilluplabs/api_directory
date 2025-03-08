@@ -18,21 +18,21 @@ model User{
   email String  @unique
   password String 
   phone String
-   code      String   @default("45") 
-  expiryAt  DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   rooms      Room[]
   jobs       Job[]
 }
+
 model emailConfirmation{
    id         String @id @default(uuid())
-  email      String @unique
+  email      String 
   code       String
-  type       String
+  expiryAt  DateTime 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
 }
 
 model Room{
