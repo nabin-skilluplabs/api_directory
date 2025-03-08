@@ -2,6 +2,7 @@
 import express from 'express';
 import * as authServices from '../services/authServices.js'
 import { Prisma } from '@prisma/client';
+import { sendOTP } from '../services/sendEmail.js';
 
 var router = express.Router();
 
@@ -17,8 +18,12 @@ router.post('/sign-up', async function (req, res, next) {
         }
         if(message.length > 0){
             return  res.status(400).json({error: {messages: message }})
+        
 
         }
+        await authServices.registerUser(userData);
+        await sendOTP(userData)
+
         res.status(201).json({message: 'User is registered Successfully'}); 
 
     } catch (error) {
