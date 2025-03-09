@@ -57,3 +57,9 @@ export async function getOneUser(condition) {
     return await prisma.user.findFirst({ where: condition });
   }
   
+  export async function signIn(data) {
+    const existingClient = await getOneUser({ email: data.email });
+    return await bcrypt.compare(data.password, existingClient.password);
+  }
+  
+  

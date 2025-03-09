@@ -50,4 +50,18 @@ router.post("/sign-up/verify-otp", async function (req, res, next) {
 
 })
 
+router.post("/sign-in", async function (req, res, next) {
+    const userData = req.body;
+    console.log(userData)
+    const existingUserWithEmail = await authServices.getOneUser({email: userData.email});
+    if(!existingUserWithEmail) {
+      return res.status(404).json({error: {messages: [`Email ${userData.email} is not registered!`]}})
+    }
+    const passwordMatches = await authServices.signIn(userData)
+    if(!passwordMatches) {
+      return res.status(401).json({error: {messages: [`Email and password does not match. Try again!`]}})
+    }
+    return res.sendStatus(200).json({message: "YOu are successfully Sign-in"})
+})
+
 export default router;
