@@ -3,6 +3,8 @@ import express from 'express'
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
+
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
 import authRouter from './routes/auth.js'
@@ -11,11 +13,14 @@ import roomRouter from './routes/room.js'
 
 var app = express();
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
