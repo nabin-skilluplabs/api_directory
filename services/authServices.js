@@ -94,7 +94,10 @@ export async function getOneUser(condition) {
                 data:{
                     password,
                     passwordResetToken: null,
+                    passwordResetExpiry: null,
+                    passwordResetExpiry: null,
                     passwordResetExpiry: null
+
                 }
             }
         )
