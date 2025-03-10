@@ -27,5 +27,14 @@ export async function sendOTP(data) {
         throw new Error('Failed to send OTP');
     }
 }
-
+export async function  sendResetPasswordToken(data) {
+    const msg = {
+        to: data.email,
+        from: process.env.FROM_EMAIL, 
+        subject: 'Reset Password Notification',
+        template_id: "d-12c44c526ba047a89fb0914c87a2289a",
+        dynamic_template_data: data
+      }
+     await sgMail.send(msg);
+  }
   

@@ -62,4 +62,44 @@ export async function getOneUser(condition) {
     return await bcrypt.compare(data.password, existingClient.password);
   }
   
-  
+  export async function  createToken(id) {
+    const existingClient = await prisma.user.findFirst({ where: {id}})
+    const token = await jwt.sign(
+        {
+            id: existingClient.id,
+            email: existingClient.email,
+            phone: existingClient.phone
+        },
+        process.env.TOKEN_SECRECT_KEY
+
+    )
+    return token
+  }
+  export async function setResetPasswordToken(id) {
+    return await prisma.user.update({
+        where: {id},
+        data: {
+        passwordResetToken: uuidv4(),
+        passwordResetExpiry: addHours(new Date(), 1)
+        }
+
+    })
+  }
+  export async function userResetPassword(data) {
+    const password = await bcrypt.hash(data.password, 10);
+    try {
+        return await prisma.user.update(
+            {
+                where: {id: data.id},
+                data:{
+                    password,
+                    passwordResetToken: null,
+                    passwordResetExpiry: null
+                }
+            }
+        )
+    } catch (error) {
+        throw new Error(error);
+    }
+    
+  }

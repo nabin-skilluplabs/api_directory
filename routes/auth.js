@@ -1,6 +1,6 @@
 import express from "express";
 import * as authServices from "../services/authServices.js";
-import { sendOTP } from "../services/sendEmail.js";
+import { sendOTP, sendResetPasswordToken } from "../services/sendEmail.js";
 import { Prisma, PrismaClient } from "@prisma/client";
 
 var router = express.Router();
@@ -70,6 +70,31 @@ router.post("/sign-in", async function (req, res, next) {
   }
    
 
+})
+router.post("/forgot-password", async function (req, res, next) {
+  try {
+    const userDate = req.body;
+    const existingUserWithEmail = await authServices.getOneUser({
+      email: userDate.email
+    })
+    if (!existingUserWithEmail) {
+      return res.status(404).json({
+        error: {
+          messages: ["We can't find a user with that email address."],
+        },
+      });
+    }
+    const updateData = await authServices.setResetPasswordToken(
+      existingUserWithEmail.id
+    )
+    await sendResetPasswordToken({
+      email: updateData.email,
+      
+    })
+
+  } catch (error) {
+    
+  }
 })
 
 export default router;
